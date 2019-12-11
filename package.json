@@ -1,0 +1,24 @@
+{
+  "name": "koa-mysql",
+  "version": "1.0.0",
+  "description": "a small project",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "koa",
+    "mysql"
+  ],
+  "author": "Edison-tianhe",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {}
+}
