@@ -12,7 +12,7 @@ const config = {
    * @description mysql配置
    */
   database: {
-    DATABASE: 'nodesql',
+    DATABASE: 'myemployees',
     USERNAME: 'root',
     PASSWORD: '123456',
     PORT: '3306',
@@ -21,7 +21,7 @@ const config = {
   /**
    * @description 路由前缀
    */
-  routerPrefixes: ''
+  routerPrefixes: '/blog'
 }
 
 module.exports = config

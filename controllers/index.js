@@ -1,36 +1,37 @@
-var fn_index = async (ctx, next) => {
+const fn_index = async (ctx, next) => {
   ctx.response.body = `<h1>Index</h1>
       <form action="/signin" method="post">
           <p>Name: <input name="name" value="koa"></p>
           <p>Password: <input name="password" type="password"></p>
           <p><input type="submit" value="Submit"></p>
-      </form>`;
-};
+      </form>`
+}
 
-var fn_signin = async (ctx, next) => {
-  var
+const fn_signin = async (ctx, next) => {
+  let
       name = ctx.request.body.name || '',
-      password = ctx.request.body.password || '';
+      password = ctx.request.body.password || ''
   if (name === 'koa' && password === '12345') {
-      ctx.response.body = `<h1>Welcome, ${name}!</h1>`;
+      ctx.response.body = `<h1>Welcome, ${name}!</h1>`
   } else {
       ctx.response.body = `<h1>Login failed!</h1>
-      <p><a href="/">Try again</a></p>`;
+      <p><a href="/">Try again</a></p>`
   }
-};
+}
 
-var fn_test = async (ctx, next) => {
-  ctx.body = {
-    code: 0,
-    data: {
-      msg: '成功了'
-    },
-    msg: 'success'
-  }  
-};
+const fn_test = async (ctx, next) => {
+  await ctx.state.$mysql.query('SELECT * FROM jobs')
+  .then(_ => 
+    ctx.body = {
+      code: 0,
+      data: _,
+      msg: '成功'
+    }
+  )
+}
 
 module.exports = {
   'GET /': fn_index,
   'POST /signin': fn_signin,
   'GET /test': fn_test
-};
+}

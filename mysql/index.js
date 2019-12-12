@@ -1,18 +1,23 @@
-var mysql = require('mysql')
-var config = require('../config')
+const mysql = require('mysql')
+const config = require('../config')
 
-var pool  = mysql.createPool({
+const pool  = mysql.createPool({
   host     : config.database.HOST,
   user     : config.database.USERNAME,
   password : config.database.PASSWORD,
   database : config.database.DATABASE
 })
 
+pool.getConnection((err, connection) => {
+  if (err) throw err
+  console.log(`\u001b[44m success \u001b[0m \u001b[36mmaster, The databases is ready!\u001b[0m`)
+})
+
 class Mysql {
   constructor () {}
-  query () {
+  query (sql) {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * from ceshidata', (error, results, fields) => {
+      pool.query(sql, (error, results, fields) => {
         if (error) {
           throw error
         }

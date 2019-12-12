@@ -2,10 +2,15 @@ const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 
 const config = require('./config')
-// const mysql = require('./mysql')
+const mysql = require('./mysql')
 const controller = require('./middleware/controller')
 
 const app = new Koa()
+
+app.use(async (ctx, next) => {
+  ctx.state.$mysql = mysql
+  await next()
+})
 
 app.use(bodyParser())
 
@@ -17,4 +22,4 @@ app.use(async ctx => {
 
 app.listen(config.port, config.address)
 
-console.log(`\u001b[42m success \u001b[0m The project runs on http://${config.address}:${config.port}`)
+console.log(`\u001b[42m biu \u001b[0m Come and play with me http://${config.address}:${config.port}`)
