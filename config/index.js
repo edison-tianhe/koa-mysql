@@ -21,7 +21,7 @@ const config = {
   /**
    * @description 路由前缀
    */
-  routerPrefixes: '/blog'
+  routerPrefixes: ''
 }
 
 module.exports = config

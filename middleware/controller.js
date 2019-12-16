@@ -47,5 +47,5 @@ module.exports = dir => {
           prefix: `${config.routerPrefixes || ''}`
         })
     addControllers(router, controllers_dir)
-    return router.routes()
+    return router
 };
