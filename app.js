@@ -1,20 +1,20 @@
 const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
+const koaBody = require('koa-body')
+const koaFavicon = require('koa-favicon')
 
 const config = require('./config')
-const mysql = require('./mysql')
 const controller = require('./middleware/controller')
+const verifyToken = require('./middleware/verifyToken')
 
 const app = new Koa()
 
-app.use(async (ctx, next) => {
-  ctx.state.$mysql = mysql
-  await next()
-})
+app.use(koaFavicon(`${__dirname}/public/favicon.ico`))
 
-app.use(bodyParser())
+app.use(koaBody())
 
 app.use(controller())
+
+app.use(verifyToken())
 
 app.use(async ctx => {
   ctx.body = `hello node.js+koa+mysql`

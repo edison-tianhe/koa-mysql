@@ -8,6 +8,11 @@ const startTime = Date.now()
 
 class Mysql {
   constructor () {
+
+    this.backInfo = function (code, data, msg) {
+      return { code: code, data: data, msg: msg }
+    }
+
     this.pool = mysql.createPool({
       host     : config.database.HOST,
       user     : config.database.USERNAME,
