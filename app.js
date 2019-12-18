@@ -43,6 +43,11 @@ app.use(koaBody({
 app.use(controller().routes())
 app.use(controller().allowedMethods())
 
+app.on('error', err => {
+  // https://segmentfault.com/a/1190000004612409#item-3
+  console.error('server error1111')
+})
+
 app.listen(config.port, config.address, () => {
   console.log(`\u001b[42m biu \u001b[0m Come and play with me \u001b[32mhttp://${config.address}:${config.port}\u001b[0m`)
 })

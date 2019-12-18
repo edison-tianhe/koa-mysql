@@ -2,39 +2,47 @@ const jwt = require('jsonwebtoken')
 
 let whileList = ['/login']
 
+function valid(ctx){
+  const res = new Promise((resolve, reject) => {
+    const { cookie } = ctx.header
+    let token = cookie ? cookie.split('; ') : []
+    token = token.filter(v => {
+      return v.split('=')[0] === 'Edison_cookies'
+    })
+    token = token.join('').split('=')[1]
+    if (!token) {
+      resolve(false)
+    }
+    jwt.verify(token, ctx.$config.secret, (err, decoded) => {
+      if (err) {
+        resolve(false)
+      }
+      const { exp } = decoded
+      if (exp*1000 > new Date().getTime()) {
+        resolve(true)
+      } else {
+        resolve(false)
+      }
+    })
+  })
+  return res            
+}
+
+
 module.exports = async (ctx, next) => {
   if (whileList.includes(ctx.url)) {
     await next()
   } else {
-    try {
-      const { cookie } = ctx.header
-      let dataArr = cookie ? cookie.split('; ') : []
-      dataArr = dataArr.filter(v => {
-        return v.split('=')[0] === 'Edison_cookies'
-      })
-      const token = dataArr.join('').split('=')[1]
-      const Payload = await jwt.verify(token, ctx.$config.secret)
-      const { exp } = Payload
-      if (exp*1000 > new Date().getTime()) {
-        await next().catch((err) => {
-          ctx.status = err.statusCode || err.status || 500
-          ctx.body = err
-        })
-      } else {
-        ctx.status = 401
-        ctx.body = {
-          code: 401,
-          data: [],
-          message: '登录超时,请重新登录'
-        }
-      }
-    } catch (e) {
+    const verifyToken = await valid(ctx)
+    if(!verifyToken) {
       ctx.status = 401
       ctx.body = {
         code: 401,
         data: [],
         message: '无效的登录方式'
       }
+    } else {
+      await next()
     }
   }
 }
