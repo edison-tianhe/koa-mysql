@@ -1,20 +1,24 @@
-const fs = require('fs')
 const path = require('path')
 const Koa = require('koa')
 const koaBody = require('koa-body')
 const koaFavicon = require('koa-favicon')
+const koaStatic = require('koa-static')
 
 const config = require('./config')
+const mysql = require('./mysql')
 const controller = require('./middleware/controller')
-const verifyToken = require('./middleware/verifyToken')
-const myError = require('./middleware/error')
 const utils = require('./utils/utils')
 
-config.secret = utils.guid()
+config.secret = utils.guid('-')
 
 const app = new Koa()
 
+app.context.$config = config
+app.context.$mysql = mysql
+
 app.use(koaFavicon(`${__dirname}/public/favicon.ico`))
+
+app.use(koaStatic(path.join(__dirname, 'public')))
 
 app.use(async (ctx, next) => { // ? 指定跨域
   ctx.set('Access-Control-Allow-Origin', 'http://localhost:8080')
@@ -24,11 +28,17 @@ app.use(async (ctx, next) => { // ? 指定跨域
   await next()
 })
 
-app.use(koaBody())
-
-app.use(verifyToken())
-
-app.use(myError())
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+    uploadDir: path.join(__dirname, 'public/upload'),
+    keepExtensions: true,
+    onFileBegin: (name, file) => {
+      utils.checkDirExist(`public/upload/${utils.getUploadDirName()}`, __dirname)
+      file.path = `public/upload/${utils.getUploadDirName()}/${utils.guid()}.${file.name.split('.')[1]}`
+    }
+  }
+}))
 
 app.use(controller().routes())
 app.use(controller().allowedMethods())

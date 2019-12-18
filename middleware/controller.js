@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const config = require('../config')
+const verifyToken = require('./verifyToken')
 
 /**
  * 操作暴露出来的router
@@ -46,6 +47,7 @@ module.exports = dir => {
         router = require('koa-router')({
           prefix: `${config.routerPrefixes || ''}`
         })
+    router.use(verifyToken)
     addControllers(router, controllers_dir)
     return router
-};
+}

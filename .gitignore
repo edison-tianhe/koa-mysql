@@ -5,6 +5,9 @@ node_modules
 # 随机秘钥
 /config/secret.*
 
+# 上传的文件
+/public/upload
+
 # local env files
 .env.local
 .env.*.local

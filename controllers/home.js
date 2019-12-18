@@ -1,9 +1,7 @@
-const mysql = require('../mysql')
-
 const fn_home_end = async (ctx, next) => {
-  await mysql.end()
+  await ctx.$mysql.end()
   .then(_ => 
-    ctx.body = mysql.backInfo(0, [], '退出成功')
+    ctx.body = ctx.$mysql.backInfo(0, [], '退出成功')
   )
 }
 
