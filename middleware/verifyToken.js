@@ -35,7 +35,7 @@ module.exports = async (ctx, next) => {
       ctx.body = {
         code: 401,
         data: [],
-        message: '无效的登录方式'
+        msg: '无效的登录方式'
       }
     } else {
       await next()

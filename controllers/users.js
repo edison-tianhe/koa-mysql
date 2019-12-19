@@ -51,7 +51,7 @@ const fn_login = async (ctx, next) => {
             overwrite: true
           } 
         )
-        ctx.body = ctx.$mysql.backInfo(0, [], '登录成功')
+        ctx.body = ctx.$mysql.backInfo(0, res[0], '登录成功')
       } else {
         ctx.body = ctx.$mysql.backInfo(-1, [], '账号或者密码不对')
       }
