@@ -6,12 +6,15 @@ const koaStatic = require('koa-static')
 
 const config = require('./config')
 const mysql = require('./mysql')
+const myError = require('./middleware/myError')
 const controller = require('./middleware/controller')
 const utils = require('./utils/utils')
 
 config.secret = utils.guid('-')
 
 const app = new Koa()
+
+app.use(myError)
 
 app.context.$config = config
 app.context.$mysql = mysql
@@ -42,11 +45,6 @@ app.use(koaBody({
 
 app.use(controller().routes())
 app.use(controller().allowedMethods())
-
-app.on('error', err => {
-  // https://segmentfault.com/a/1190000004612409#item-3
-  console.error('server error1111')
-})
 
 app.listen(config.port, config.address, () => {
   console.log(`\u001b[42m biu \u001b[0m Come and play with me \u001b[32mhttp://${config.address}:${config.port}\u001b[0m`)

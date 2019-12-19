@@ -3,16 +3,13 @@ const jwt = require('jsonwebtoken')
 let whileList = ['/login']
 
 function valid(ctx){
-  const res = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const { cookie } = ctx.header
     let token = cookie ? cookie.split('; ') : []
     token = token.filter(v => {
       return v.split('=')[0] === 'Edison_cookies'
     })
     token = token.join('').split('=')[1]
-    if (!token) {
-      resolve(false)
-    }
     jwt.verify(token, ctx.$config.secret, (err, decoded) => {
       if (err) {
         resolve(false)
@@ -25,7 +22,6 @@ function valid(ctx){
       }
     })
   })
-  return res            
 }
 
 
