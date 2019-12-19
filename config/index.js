@@ -12,7 +12,7 @@ const config = {
    * @description mysql配置
    */
   database: {
-    DATABASE: 'myemployees',
+    DATABASE: 'blog',
     USERNAME: 'root',
     PASSWORD: '123456',
     PORT: '3306',

@@ -1,10 +1,12 @@
 const mysqlCreateTable = [
   ` create table if not exists users(
     id INT NOT NULL AUTO_INCREMENT,
-    userName VARCHAR(100) NOT NULL UNIQUE,
-    passWord VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     avator VARCHAR(100) NOT NULL,
-    moment VARCHAR(100) NOT NULL,
+    sex CHAR(1) DEFAULT 1,
+    phone CHAR(11) NOT NULL,
     PRIMARY KEY ( id )
   );`
 ]

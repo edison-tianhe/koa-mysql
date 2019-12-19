@@ -68,10 +68,22 @@ function checkDirExist (dirpath, root = __dirname) {
     }
 }
 
+/**
+ * 判断该值是否为空
+ *
+ * @param {*} value 需要判断的值
+ */
+function isEmpty (value) {
+	return value === undefined || value === null ||
+	(typeof value === 'object' && Object.keys(value).length === 0) ||
+	(typeof valur === 'string' && value.trim().length === 0)
+}
+
 module.exports = {
     guid,
     getUploadFileExt,
     getUploadFileName,
     getUploadDirName,
-    checkDirExist
+    checkDirExist,
+    isEmpty
 }
