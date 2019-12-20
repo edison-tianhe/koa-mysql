@@ -21,7 +21,11 @@ const config = {
   /**
    * @description 路由前缀
    */
-  routerPrefixes: ''
+  routerPrefixes: '',
+  /**
+   * @description 保存在客户端的token名称
+   */
+  tokenName: 'Edison_cookies'
 }
 
 module.exports = config

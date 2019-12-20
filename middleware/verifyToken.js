@@ -7,7 +7,7 @@ function valid(ctx){
     const { cookie } = ctx.header
     let token = cookie ? cookie.split('; ') : []
     token = token.filter(v => {
-      return v.split('=')[0] === 'Edison_cookies'
+      return v.split('=')[0] === ctx.$config.tokenName
     })
     token = token.join('').split('=')[1]
     jwt.verify(token, ctx.$config.secret, (err, decoded) => {
@@ -31,6 +31,14 @@ module.exports = async (ctx, next) => {
   } else {
     const verifyToken = await valid(ctx)
     if(!verifyToken) {
+      ctx.cookies.set(
+        ctx.$config.tokenName, null, {
+          domain: 'localhost',
+          maxAge: 0,
+          httpOnly: true,
+          overwrite: true
+        } 
+      )
       ctx.status = 401
       ctx.body = {
         code: 401,

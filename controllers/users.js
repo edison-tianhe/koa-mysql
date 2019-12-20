@@ -44,7 +44,7 @@ const fn_login = async (ctx, next) => {
           username: res[0].username
         }, ctx.$config.secret, { expiresIn: '1h' })
         ctx.cookies.set(
-          'Edison_cookies', token, {
+          ctx.$config.tokenName, token, {
             domain: 'localhost',
             maxAge: 1000*60*60,
             httpOnly: true,
@@ -61,6 +61,18 @@ const fn_login = async (ctx, next) => {
   })
 }
 
+const fn_logout = async (ctx, next) => {
+  ctx.cookies.set(
+    ctx.$config.tokenName, null, {
+      domain: 'localhost',
+      maxAge: 0,
+      httpOnly: true,
+      overwrite: true
+    } 
+  )
+  ctx.body = ctx.$mysql.backInfo(0, [], '退出成功')
+}
+
 const fn_users = async (ctx, next) => {
   await ctx.$mysql.query('SELECT * FROM users')
   .then(res => 
@@ -72,5 +84,6 @@ module.exports = {
   'GET /': fn_,
   'POST /signin': fn_signin,
   'POST /login': fn_login,
+  'GET /logout': fn_logout,
   'GET /users': fn_users
 }
