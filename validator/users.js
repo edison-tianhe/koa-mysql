@@ -8,7 +8,7 @@ function validatorUserSignin (data) {
   data.email = !isEmpty(data.email) ? data.email : ''
   data.password = !isEmpty(data.password) ? data.password : ''
   data.avator = !isEmpty(data.avator) ? data.avator : ''
-  data.sex = !isEmpty(data.sex) ? data.sex : ''
+  data.sex = !isEmpty(data.sex) ? data.sex + '' : ''
   data.phone = !isEmpty(data.phone) ? data.phone : ''
 
   if(!Validator.isLength(data.username, {min:2,max:20})){
@@ -43,7 +43,7 @@ function validatorUserSignin (data) {
     errors.sex = "性别不能为空"
   }
 
-  if(!Validator.isInt(data.sex)){
+  if(!Validator.isNumeric(data.sex)){
     errors.sex = "性别无法识别"
   }
 

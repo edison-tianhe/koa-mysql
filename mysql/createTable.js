@@ -5,7 +5,7 @@ const mysqlCreateTable = [
     password VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     avator VARCHAR(100) NOT NULL,
-    sex CHAR(1) DEFAULT 1,
+    sex INT(1) DEFAULT 1,
     phone CHAR(11) NOT NULL,
     PRIMARY KEY ( id )
   );`
