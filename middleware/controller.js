@@ -12,13 +12,19 @@ const verifyToken = require('./verifyToken')
 function addMapping(router, mapping) {
   for (let url in mapping) {
       if (url.startsWith('GET ')) {
-          let path = url.substring(4)
-          router.get(path, mapping[url])
+        let path = url.substring(4)
+        router.get(path, mapping[url])
       } else if (url.startsWith('POST ')) {
-          let path = url.substring(5)
-          router.post(path, mapping[url])
+        let path = url.substring(5)
+        router.post(path, mapping[url])
+      } else if (url.startsWith('DELETE ')) {
+        let path = url.substring(7)
+        router.delete(path, mapping[url])
+      } else if (url.startsWith('PUT ')) {
+        let path = url.substring(4)
+        router.put(path, mapping[url])
       } else {
-          console.log(`invalid URL: ${url}`)
+        console.log(`invalid URL: ${url}`)
       }
   }
 }
