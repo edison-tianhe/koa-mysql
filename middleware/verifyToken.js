@@ -14,8 +14,9 @@ function valid(ctx){
       if (err) {
         resolve(false)
       }
-      const { exp } = decoded
+      const { exp, id } = decoded
       if (exp*1000 > new Date().getTime()) {
+        ctx.$activeUserId = id
         resolve(true)
       } else {
         resolve(false)
