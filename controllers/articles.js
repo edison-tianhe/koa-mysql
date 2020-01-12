@@ -6,10 +6,25 @@
  * @returns
  */
 const fn_insert = async (ctx, next) => {
-  const { title, content, category, stick, status } = ctx.request.body
-  await ctx.$mysql.query(`INSERT INTO articles(\`userId\`, \`title\`, \`content\`, \`category\`, \`stick\`, \`status\`)
-  VALUES('${ctx.$activeUserId}', '${title}', '${content}', '${category}', ${stick}, ${status})`)
-  .then(res => {
+  const { title, intro, content, contentHTML, category, stick, status } = ctx.request.body
+  await ctx.$mysql.query(`INSERT INTO articles(
+    \`userId\`,
+    \`title\`,
+    \`intro\`,
+    \`content\`,
+    \`contentHTML\`,
+    \`category\`,
+    \`stick\`,
+    \`status\`)
+  VALUES(
+    '${ctx.$activeUserId}',
+    '${title}',
+    '${intro}',
+    '${content}',
+    '${contentHTML}',
+    '${category}',
+    ${stick}, ${status})`
+  ).then(res => {
     ctx.body = ctx.$mysql.backInfo(0, [], '添加成功')
   })
 }
@@ -52,11 +67,13 @@ const fn_deleteItem = async (ctx, next) => {
  * @param {*} next
  */
 const fn_updateItem = async (ctx, next) => {
-  const { id, userId, title, content, category, stick, status } = ctx.request.body
+  const { id, userId, title, intro, content, contentHTML, category, stick, status } = ctx.request.body
   await ctx.$mysql.query(`UPDATE articles SET 
     \`userId\` = '${userId}',
     \`title\` = '${title}',
+    \`intro\` = '${intro}',
     \`content\` = '${content}',
+    \`contentHTML\` = '${contentHTML}',
     \`category\` = '${category}',
     \`stick\` = '${stick}',
     \`status\` = '${status}'
