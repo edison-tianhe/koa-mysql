@@ -29,6 +29,8 @@ function valid(ctx){
 module.exports = async (ctx, next) => {
   if (whileList.includes(ctx.url)) {
     await next()
+  } else if (ctx.method === 'GET') {
+    await next()
   } else {
     const verifyToken = await valid(ctx)
     if(!verifyToken) {
