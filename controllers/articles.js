@@ -53,7 +53,7 @@ const fn_deleteItem = async (ctx, next) => {
  */
 const fn_updateItem = async (ctx, next) => {
   const { id, userId, title, content, category, stick, status } = ctx.request.body
-  await ctx.$mysql.query(`UPDATE users SET 
+  await ctx.$mysql.query(`UPDATE articles SET 
     \`userId\` = '${userId}',
     \`title\` = '${title}',
     \`content\` = '${content}',
@@ -77,10 +77,62 @@ const fn_updateItem = async (ctx, next) => {
  * @param {*} next
  */
 const fn_articles = async (ctx, next) => {
-  await ctx.$mysql.query('SELECT * FROM articles')
-  .then(res => 
+  await ctx.$mysql.query(`SELECT articles.*, users.username, users.avator
+    FROM articles LEFT JOIN users on articles.userId = users.id
+    ORDER BY articles.updatetime DESC`
+  ).then(res => 
     ctx.body = ctx.$mysql.backInfo(0, res, '查找成功')
   )
+}
+
+/**
+ * 文章详情
+ *
+ * @param {*} ctx
+ * @param {*} next
+ */
+const fn_find_articles = async (ctx, next) => {
+  const { id } = ctx.params
+  await ctx.$mysql.query(`SELECT * FROM articles WHERE id = '${id}'`)
+  .then(res => 
+    ctx.body = ctx.$mysql.backInfo(0, res[0], '查找成功')
+  )
+}
+
+/**
+ * 文章置顶开关
+ *
+ * @param {*} ctx
+ * @param {*} next
+ */
+const fn_articles_stick = async (ctx, next) => {
+  const { id, stick } = ctx.params
+  await ctx.$mysql.query(`UPDATE articles SET \`stick\` = '${stick}' WHERE id = ${id}`)
+  .then(_ => {
+    if (_.affectedRows) {
+      ctx.body = ctx.$mysql.backInfo(0, [], '修改置顶状态成功')
+    } else {
+      ctx.body = ctx.$mysql.backInfo(-1, [], '修改置顶状态失败')
+    }
+  })
+}
+
+/**
+ * 文章发布开关
+ *
+ * @param {*} ctx
+ * @param {*} next
+ */
+const fn_articles_status = async (ctx, next) => {
+  const { id, status } = ctx.params
+  await ctx.$mysql.query(`UPDATE articles SET \`status\` = '${status}' WHERE id = ${id}`)
+  .then(_ => {
+    if (_.affectedRows) {
+      ctx.body = ctx.$mysql.backInfo(0, [], '修改发布状态成功')
+    } else {
+      ctx.body = ctx.$mysql.backInfo(-1, [], '修改发布状态失败')
+    }
+  })
 }
 
 module.exports = {
@@ -88,5 +140,8 @@ module.exports = {
   'DELETE /articles/delete': fn_deleteAll,
   'DELETE /articles/delete/:id': fn_deleteItem,
   'PUT /articles/update': fn_updateItem,
-  'GET /articles': fn_articles
+  'GET /articles': fn_articles,
+  'GET /articles/:id': fn_find_articles,
+  'PUT /articles/stick/:id/:stick': fn_articles_stick,
+  'PUT /articles/status/:id/:status': fn_articles_status
 }
