@@ -8,7 +8,7 @@
 const fn_insert = async (ctx, next) => {
   const { label, status } = ctx.request.body
   await ctx.$mysql.query(`INSERT INTO categorys(\`label\`, \`status\`)
-  VALUES('${label}', '${status}')`)
+  VALUES(?, ?)`, [label, status])
   .then(res => {
     ctx.body = ctx.$mysql.backInfo(0, [], '添加成功')
   })
@@ -35,7 +35,7 @@ const fn_deleteAll = async (ctx, next) => {
  */
 const fn_deleteItem = async (ctx, next) => {
   const { id } = ctx.params
-  await ctx.$mysql.query(`DELETE FROM categorys WHERE id = '${id}'`)
+  await ctx.$mysql.query(`DELETE FROM categorys WHERE id = ?`, id)
   .then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '删除成功')
@@ -53,11 +53,16 @@ const fn_deleteItem = async (ctx, next) => {
  */
 const fn_updateItem = async (ctx, next) => {
   const { id, label, status } = ctx.request.body
-  await ctx.$mysql.query(`UPDATE categorys SET 
-    \`label\` = '${label}',
-    \`status\` = '${status}'
-    WHERE id = ${id}`
-  ).then(_ => {
+  await ctx.$mysql.query(`
+  UPDATE categorys SET 
+    \`label\` = ?,
+    \`status\` = ?
+    WHERE id = ?
+  `, [
+    label,
+    status,
+    id
+  ]).then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '修改成功')
     } else {

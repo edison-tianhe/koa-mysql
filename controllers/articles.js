@@ -7,7 +7,17 @@
  */
 const fn_insert = async (ctx, next) => {
   const { title, intro, content, contentHTML, category, stick, status } = ctx.request.body
-  await ctx.$mysql.query(`INSERT INTO articles(
+  // *原来是写法有误,导致mysql语法报错~现在已经不用
+  const newContentHTML = contentHTML.replace(/[<">']/g, (target) => {
+    return {
+        '<': '&lt;',
+        '"': '&quot;',
+        '>': '&gt;',
+        "'": '&#39;'
+    }[target]
+  })
+  await ctx.$mysql.query(`
+  INSERT INTO articles(
     \`userId\`,
     \`title\`,
     \`intro\`,
@@ -15,16 +25,18 @@ const fn_insert = async (ctx, next) => {
     \`contentHTML\`,
     \`category\`,
     \`stick\`,
-    \`status\`)
-  VALUES(
-    '${ctx.$activeUserId}',
-    '${title}',
-    '${intro}',
-    '${content}',
-    '${contentHTML}',
-    '${category}',
-    ${stick}, ${status})`
-  ).then(res => {
+    \`status\`
+  ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    ctx.$activeUserId,
+    title,
+    intro,
+    content,
+    contentHTML,
+    category,
+    stick,
+    status
+  ]).then(res => {
     ctx.body = ctx.$mysql.backInfo(0, [], '添加成功')
   })
 }
@@ -50,7 +62,7 @@ const fn_deleteAll = async (ctx, next) => {
  */
 const fn_deleteItem = async (ctx, next) => {
   const { id } = ctx.params
-  await ctx.$mysql.query(`DELETE FROM articles WHERE id = '${id}'`)
+  await ctx.$mysql.query(`DELETE FROM articles WHERE id = ?`, id)
   .then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '删除成功')
@@ -68,17 +80,37 @@ const fn_deleteItem = async (ctx, next) => {
  */
 const fn_updateItem = async (ctx, next) => {
   const { id, userId, title, intro, content, contentHTML, category, stick, status } = ctx.request.body
-  await ctx.$mysql.query(`UPDATE articles SET 
-    \`userId\` = '${userId}',
-    \`title\` = '${title}',
-    \`intro\` = '${intro}',
-    \`content\` = '${content}',
-    \`contentHTML\` = '${contentHTML}',
-    \`category\` = '${category}',
-    \`stick\` = '${stick}',
-    \`status\` = '${status}'
-    WHERE id = ${id}`
-  ).then(_ => {
+  // *原来是写法有误,导致mysql语法报错~现在已经不用
+  const newContentHTML = contentHTML.replace(/[<">']/g, (target) => {
+    return {
+        '<': '&lt;',
+        '"': '&quot;',
+        '>': '&gt;',
+        "'": '&#39;'
+    }[target]
+  })
+  await ctx.$mysql.query(`
+  UPDATE articles SET 
+    \`userId\` = ?,
+    \`title\` = ?,
+    \`intro\` = ?,
+    \`content\` = ?,
+    \`contentHTML\` = ?,
+    \`category\` = ?,
+    \`stick\` = ?,
+    \`status\` = ?
+    WHERE id = ?
+  `, [
+    userId,
+    title,
+    intro,
+    content,
+    contentHTML,
+    category,
+    stick,
+    status,
+    id
+  ]).then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '修改成功')
     } else {
@@ -94,7 +126,18 @@ const fn_updateItem = async (ctx, next) => {
  * @param {*} next
  */
 const fn_articles = async (ctx, next) => {
-  await ctx.$mysql.query(`SELECT articles.*, users.username, users.avator
+  await ctx.$mysql.query(`SELECT
+    articles.id,
+    articles.userId,
+    users.username,
+    users.avator,
+    articles.category,
+    articles.title,
+    articles.intro,
+    articles.stick,
+    articles.status,
+    articles.createtime,
+    articles.updatetime
     FROM articles LEFT JOIN users on articles.userId = users.id
     ORDER BY articles.updatetime DESC`
   ).then(res => 
@@ -110,7 +153,7 @@ const fn_articles = async (ctx, next) => {
  */
 const fn_find_articles = async (ctx, next) => {
   const { id } = ctx.params
-  await ctx.$mysql.query(`SELECT * FROM articles WHERE id = '${id}'`)
+  await ctx.$mysql.query(`SELECT * FROM articles WHERE id = ?`, id)
   .then(res => 
     ctx.body = ctx.$mysql.backInfo(0, res[0], '查找成功')
   )
@@ -124,7 +167,7 @@ const fn_find_articles = async (ctx, next) => {
  */
 const fn_articles_stick = async (ctx, next) => {
   const { id, stick } = ctx.params
-  await ctx.$mysql.query(`UPDATE articles SET \`stick\` = '${stick}' WHERE id = ${id}`)
+  await ctx.$mysql.query(`UPDATE articles SET \`stick\` = ? WHERE id = ?`, [stick, id])
   .then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '修改置顶状态成功')
@@ -142,7 +185,7 @@ const fn_articles_stick = async (ctx, next) => {
  */
 const fn_articles_status = async (ctx, next) => {
   const { id, status } = ctx.params
-  await ctx.$mysql.query(`UPDATE articles SET \`status\` = '${status}' WHERE id = ${id}`)
+  await ctx.$mysql.query(`UPDATE articles SET \`status\` = ? WHERE id = ?`, [status, id])
   .then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '修改发布状态成功')

@@ -24,7 +24,7 @@ const fn_login = async (ctx, next) => {
   if (!isValid) {
     return ctx.body = ctx.$mysql.backInfo(-1, errors, '登陆失败')
   }
-  await ctx.$mysql.query(` SELECT * FROM users WHERE (\`username\`='${username}')`)
+  await ctx.$mysql.query(` SELECT * FROM users WHERE (\`username\`= ?)`, username)
   .then(res => {
     if (res.length === 1) {
       if (res[0].password === password) {
@@ -82,7 +82,7 @@ const fn_signin = async (ctx, next) => {
   if (!isValid) {
     return ctx.body = ctx.$mysql.backInfo(-1, errors, '注册失败')
   }
-  await ctx.$mysql.query(` SELECT * FROM users WHERE (\`username\`='${username}')`)
+  await ctx.$mysql.query(` SELECT * FROM users WHERE (\`username\`= ?)`, username)
   .then(res => {
     if (res.length > 0) {
       ctx.body = ctx.$mysql.backInfo(-1, errors, '该用户名已经被注册')
@@ -90,9 +90,23 @@ const fn_signin = async (ctx, next) => {
     }
   })
   .then(async res => {
-    await ctx.$mysql.query(`INSERT INTO users(username, \`password\`, email, avator, sex, phone)
-    VALUES('${username}', '${password}', '${email}', '${avator}', ${sex}, ${phone})`)
-    .then(res => {
+    await ctx.$mysql.query(`
+    INSERT INTO users(
+      \`username\`,
+      \`password\`,
+      \`email\`,
+      \`avator\`,
+      \`sex\`,
+      \`phone\`)
+    VALUES(?, ?, ?, ?, ?, ?)
+    `, [
+      username,
+      password,
+      email,
+      avator,
+      sex,
+      phone
+    ]).then(res => {
       ctx.body = ctx.$mysql.backInfo(0, [], '注册成功')
     })
   })
@@ -120,7 +134,7 @@ const fn_deleteAll = async (ctx, next) => {
  */
 const fn_deleteItem = async (ctx, next) => {
   const { id } = ctx.params
-  await ctx.$mysql.query(`DELETE FROM users WHERE id = '${id}'`)
+  await ctx.$mysql.query(`DELETE FROM users WHERE id = ?`, id)
   .then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '删除成功')
@@ -138,15 +152,24 @@ const fn_deleteItem = async (ctx, next) => {
  */
 const fn_updateItem = async (ctx, next) => {
   const { id, username, password, email, avator, sex, phone } = ctx.request.body
-  await ctx.$mysql.query(`UPDATE users SET 
-    username = '${username}',
-    \`password\` = '${password}',
-    email = '${email}',
-    avator = '${avator}',
-    sex = '${sex}',
-    phone = '${phone}'
-    WHERE id = ${id}`
-  ).then(_ => {
+  await ctx.$mysql.query(`
+  UPDATE users SET 
+    \`username\` = ?,
+    \`password\` = ?,
+    \`email\` = ?,
+    \`avator\` = ?,
+    \`sex\` = ?,
+    \`phone\` = ?
+    WHERE id = ?
+  `, [
+    username,
+    password,
+    email,
+    avator,
+    sex,
+    phone,
+    id,
+  ]).then(_ => {
     if (_.affectedRows) {
       ctx.body = ctx.$mysql.backInfo(0, [], '修改成功')
     } else {

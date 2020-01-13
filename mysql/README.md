@@ -1,3 +1,4 @@
 # mysql配置信息
 
-## createTable 创建表的sql语句
+## index.js         数据库连接
+## createTable.js   创建表的sql语句
