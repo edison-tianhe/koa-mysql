@@ -136,8 +136,8 @@ const fn_articles = async (ctx, next) => {
     articles.intro,
     articles.stick,
     articles.status,
-    articles.createtime,
-    articles.updatetime
+    DATE_FORMAT(articles.createtime, '%Y-%m-%d %H:%i:%S') as createtime,
+    DATE_FORMAT(articles.updatetime, '%Y-%m-%d %H:%i:%S') as updatetime
     FROM articles LEFT JOIN users on articles.userId = users.id
     ORDER BY articles.updatetime DESC`
   ).then(res => 
