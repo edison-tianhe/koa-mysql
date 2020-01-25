@@ -17,7 +17,8 @@ class Mysql {
       host     : config.database.HOST,
       user     : config.database.USERNAME,
       password : config.database.PASSWORD,
-      database : config.database.DATABASE
+      database : config.database.DATABASE,
+      multipleStatements: true
     })
 
     console.log(`\u001b[44m success \u001b[0m \u001b[36mmaster, The databases is ready!\u001b[0m`)

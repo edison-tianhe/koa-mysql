@@ -126,7 +126,11 @@ const fn_updateItem = async (ctx, next) => {
  * @param {*} next
  */
 const fn_articles = async (ctx, next) => {
+  const { page, size } = ctx.params
+  const _page = (Number(page) - 1) * size
+  const _size = Number(size)
   await ctx.$mysql.query(`SELECT
+    SQL_CALC_FOUND_ROWS
     articles.id,
     articles.userId,
     users.username,
@@ -136,13 +140,21 @@ const fn_articles = async (ctx, next) => {
     articles.intro,
     articles.stick,
     articles.status,
+    articles.preview,
+    articles.comment,
     DATE_FORMAT(articles.createtime, '%Y-%m-%d %H:%i:%S') as createtime,
     DATE_FORMAT(articles.updatetime, '%Y-%m-%d %H:%i:%S') as updatetime
     FROM articles LEFT JOIN users on articles.userId = users.id
-    ORDER BY articles.updatetime DESC`
-  ).then(res => 
-    ctx.body = ctx.$mysql.backInfo(0, res, '查找成功')
-  )
+    ORDER BY articles.createtime DESC limit ?, ?;
+    select FOUND_ROWS();
+  `, [_page, _size]).then(res => {
+    ctx.body = ctx.$mysql.backInfo(0, {
+     data: res[0],
+     page: Number(page),
+     size: Number(size),
+     total: res[1][0]['FOUND_ROWS()']
+    }, '查找成功')
+  })
 }
 
 /**
@@ -153,10 +165,17 @@ const fn_articles = async (ctx, next) => {
  */
 const fn_find_articles = async (ctx, next) => {
   const { id } = ctx.params
-  await ctx.$mysql.query(`SELECT * FROM articles WHERE id = ?`, id)
-  .then(res => 
+  await ctx.$mysql.query(`SELECT *,
+  DATE_FORMAT(createtime, '%Y-%m-%d %H:%i:%S') as createtime,
+  DATE_FORMAT(updatetime, '%Y-%m-%d %H:%i:%S') as updatetime
+  FROM articles WHERE id = ?`, id)
+  .then(async res => {
+    await ctx.$mysql.query(`UPDATE articles SET \`preview\` = ? WHERE id = ?`, [
+      res[0].preview + 1,
+      id
+    ])
     ctx.body = ctx.$mysql.backInfo(0, res[0], '查找成功')
-  )
+  })
 }
 
 /**
@@ -200,7 +219,7 @@ module.exports = {
   'DELETE /articles/delete': fn_deleteAll,
   'DELETE /articles/delete/:id': fn_deleteItem,
   'PUT /articles/update': fn_updateItem,
-  'GET /articles': fn_articles,
+  'GET /articles/:page/:size': fn_articles,
   'GET /articles/:id': fn_find_articles,
   'PUT /articles/stick/:id/:stick': fn_articles_stick,
   'PUT /articles/status/:id/:status': fn_articles_status

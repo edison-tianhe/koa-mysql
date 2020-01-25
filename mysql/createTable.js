@@ -23,6 +23,8 @@ const mysqlCreateTable = [
     \`category\` INT DEFAULT NULL COMMENT '文章分类',
     \`stick\` TINYINT(1) DEFAULT false COMMENT '是否置顶(1置顶/0普通)',
     \`status\` TINYINT(1) DEFAULT true COMMENT '是否上线(1上线/0下线)',
+    \`preview\` INT DEFAULT 0 COMMENT '预览数量',
+    \`comment\` INT DEFAULT 0 COMMENT '评论数量',
     \`createtime\` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     \`updatetime\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY ( id )
