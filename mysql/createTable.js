@@ -41,12 +41,12 @@ const mysqlCreateTable = [
   // * 创建文章评论表
   ` create table if not exists articleComment(
     \`id\` INT NOT NULL AUTO_INCREMENT,
-    \`commentId\` INT DEFAULT NULL COMMENT '文章评论ID(用于回复)',
     \`articleId\` INT NOT NULL COMMENT '文章ID',
     \`name\` VARCHAR(255) DEFAULT NULL COMMENT '昵称',
     \`email\` VARCHAR(255) NOT NULL COMMENT '电子邮箱',
     \`blog\` VARCHAR(255) NOT NULL COMMENT '博客',
     \`comment\` longtext DEFAULT NULL COMMENT '文章评论内容',
+    \`replyList\` longtext DEFAULT NULL COMMENT '回复列表',
     \`privacy\` TINYINT(1) DEFAULT false COMMENT '是否私密(1私密/0正常)',
     \`createtime\` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     \`updatetime\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
