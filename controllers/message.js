@@ -6,21 +6,25 @@
  * @returns
  */
 const fn_insert = async (ctx, next) => {
-  const { name, email, blog, comment, privacy } = ctx.request.body
+  const { name, email, blog, comment, privacy, browseN, browseV } = ctx.request.body
   await ctx.$mysql.query(`
     INSERT INTO messageComment(
       \`name\`,
       \`email\`,
       \`blog\`,
       \`comment\`,
-      \`privacy\`
-    ) VALUES(?, ?, ?, ?, ?)
+      \`privacy\`,
+      \`browseN\`,
+      \`browseV\`
+    ) VALUES(?, ?, ?, ?, ?, ?, ?)
     `, [
     name,
     email,
     blog,
     comment,
-    privacy
+    privacy,
+    browseN,
+    browseV
   ]).then(async res => {
     ctx.body = ctx.$mysql.backInfo(0, [], '留言成功')
   })
@@ -34,7 +38,7 @@ const fn_insert = async (ctx, next) => {
  * @returns
  */
 const fn_reply = async (ctx, next) => {
-  const { id, name, email, blog, comment, replyer, createtime } = ctx.request.body
+  const { id, name, email, blog, comment, replyer, browseN, browseV, createtime } = ctx.request.body
   let replyArr = await ctx.$mysql.query(`SELECT * FROM messageComment WHERE id = ?`, id)
   let newObj = {
     id,
@@ -43,6 +47,8 @@ const fn_reply = async (ctx, next) => {
     blog,
     comment,
     replyer,
+    browseN,
+    browseV,
     createtime
   }
   if (replyArr.length) {

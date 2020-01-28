@@ -48,6 +48,8 @@ const mysqlCreateTable = [
     \`comment\` longtext DEFAULT NULL COMMENT '文章评论内容',
     \`replyList\` longtext DEFAULT NULL COMMENT '回复列表',
     \`privacy\` TINYINT(1) DEFAULT false COMMENT '是否私密(1私密/0正常)',
+    \`browseN\` VARCHAR(255) DEFAULT NULL COMMENT '浏览器信息',
+    \`browseV\` VARCHAR(255) DEFAULT NULL COMMENT '浏览器版本',
     \`createtime\` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     \`updatetime\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY ( id )
@@ -61,6 +63,8 @@ const mysqlCreateTable = [
     \`comment\` longtext DEFAULT NULL COMMENT '留言内容',
     \`replyList\` longtext DEFAULT NULL COMMENT '回复列表',
     \`privacy\` TINYINT(1) DEFAULT false COMMENT '是否私密(1私密/0正常)',
+    \`browseN\` VARCHAR(255) DEFAULT NULL COMMENT '浏览器信息',
+    \`browseV\` VARCHAR(255) DEFAULT NULL COMMENT '浏览器版本',
     \`createtime\` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     \`updatetime\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY ( id )

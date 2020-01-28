@@ -6,7 +6,7 @@
  * @returns
  */
 const fn_insert = async (ctx, next) => {
-  const { articleId, name, email, blog, comment, privacy } = ctx.request.body
+  const { articleId, name, email, blog, comment, privacy, browseN, browseV } = ctx.request.body
   await ctx.$mysql.query(`
     INSERT INTO articleComment(
       \`articleId\`,
@@ -14,15 +14,19 @@ const fn_insert = async (ctx, next) => {
       \`email\`,
       \`blog\`,
       \`comment\`,
-      \`privacy\`
-    ) VALUES(?, ?, ?, ?, ?, ?)
+      \`privacy\`,
+      \`browseN\`,
+      \`browseV\`
+    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
     `, [
     articleId,
     name,
     email,
     blog,
     comment,
-    privacy
+    privacy,
+    browseN,
+    browseV
   ]).then(async res => {
     const _res = await ctx.$mysql.query(`SELECT * FROM articles WHERE id = ?`, articleId)
     await ctx.$mysql.query(`UPDATE articles SET \`comment\` = ? WHERE id = ?`, [
@@ -41,7 +45,7 @@ const fn_insert = async (ctx, next) => {
  * @returns
  */
 const fn_reply = async (ctx, next) => {
-  const { id, articleId, name, email, blog, comment, replyer, createtime } = ctx.request.body
+  const { id, articleId, name, email, blog, comment, replyer, browseN, browseV, createtime } = ctx.request.body
   let replyArr = await ctx.$mysql.query(`SELECT * FROM articlecomment WHERE id = ?`, id)
   let newObj = {
     id,
@@ -50,6 +54,8 @@ const fn_reply = async (ctx, next) => {
     blog,
     comment,
     replyer,
+    browseN,
+    browseV,
     createtime
   }
   if (replyArr.length) {
