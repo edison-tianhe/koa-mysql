@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken')
 
-let whileList = ['/login', '/articles/comment', '/articles/reply']
+let whileList = [
+  '/login',
+  '/articles/comment',
+  '/articles/reply',
+  '/meaasge/comment',
+  '/meaasge/reply'
+]
 
 function valid(ctx){
   return new Promise((resolve, reject) => {

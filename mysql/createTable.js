@@ -52,6 +52,19 @@ const mysqlCreateTable = [
     \`updatetime\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY ( id )
   )character set utf8;`,
+  // * 创建留言表
+  ` create table if not exists messageComment(
+    \`id\` INT NOT NULL AUTO_INCREMENT,
+    \`name\` VARCHAR(255) DEFAULT NULL COMMENT '昵称',
+    \`email\` VARCHAR(255) NOT NULL COMMENT '电子邮箱',
+    \`blog\` VARCHAR(255) NOT NULL COMMENT '博客',
+    \`comment\` longtext DEFAULT NULL COMMENT '留言内容',
+    \`replyList\` longtext DEFAULT NULL COMMENT '回复列表',
+    \`privacy\` TINYINT(1) DEFAULT false COMMENT '是否私密(1私密/0正常)',
+    \`createtime\` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    \`updatetime\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY ( id )
+  )character set utf8;`
 ]
 
 module.exports = mysqlCreateTable
