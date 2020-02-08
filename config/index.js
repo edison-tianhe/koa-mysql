@@ -25,7 +25,16 @@ const config = {
   /**
    * @description 保存在客户端的token名称
    */
-  tokenName: 'Edison_cookies'
+  tokenName: 'Edison_cookies',
+  /**
+   * @description 跨域名单
+   */
+  originList: [
+    'http://localhost:8080',
+    'http://localhost:8081',
+    'http://47.95.242.44',
+    'http://47.95.242.44:8081'
+  ]
 }
 
 module.exports = config

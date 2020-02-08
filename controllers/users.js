@@ -35,7 +35,7 @@ const fn_login = async (ctx, next) => {
         }, ctx.$config.secret, { expiresIn: '1h' })
         ctx.cookies.set(
           ctx.$config.tokenName, token, {
-            domain: 'localhost',
+            domain: ctx.$host,
             maxAge: 1000*60*60,
             httpOnly: true,
             overwrite: true
@@ -60,7 +60,7 @@ const fn_login = async (ctx, next) => {
 const fn_logout = async (ctx, next) => {
   ctx.cookies.set(
     ctx.$config.tokenName, null, {
-      domain: 'localhost',
+      domain: ctx.$host,
       maxAge: 0,
       httpOnly: true,
       overwrite: true

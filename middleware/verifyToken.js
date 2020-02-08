@@ -42,7 +42,7 @@ module.exports = async (ctx, next) => {
     if(!verifyToken) {
       ctx.cookies.set(
         ctx.$config.tokenName, null, {
-          domain: 'localhost',
+          domain: ctx.$host,
           maxAge: 0,
           httpOnly: true,
           overwrite: true

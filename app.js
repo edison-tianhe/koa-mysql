@@ -24,7 +24,12 @@ app.use(koaFavicon(`${__dirname}/public/favicon.ico`))
 app.use(koaStatic(path.join(__dirname, 'public')))
 
 app.use(async (ctx, next) => { // ? 指定跨域
-  ctx.set('Access-Control-Allow-Origin', 'http://localhost:8080')
+  if (config.originList.includes(ctx.header.origin)) {
+    ctx.set('Access-Control-Allow-Origin', ctx.header.origin)
+    app.context.$host = ctx.header.host.includes(':')
+    ? ctx.header.host.split(':')[0]
+    : ctx.header.host
+  }
   ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild')
   ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS')
   ctx.set('Access-Control-Allow-Credentials', 'true')

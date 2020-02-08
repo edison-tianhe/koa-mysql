@@ -36,13 +36,13 @@ function addMapping(router, mapping) {
  * @param {*} dir 指定目录
  */
 function addControllers(router, dir) {
-  const files = fs.readdirSync(`${path.resolve(__dirname, '..')}\\${dir}`)
+  const files = fs.readdirSync(`${path.resolve(__dirname, '..')}\/${dir}`)
   const js_files = files.filter(_ => {
       return _.endsWith('.js')
   })
 
   for (let f of js_files) {
-      let mapping = require(`${path.resolve(__dirname, '..')}\\${dir}\\${f}`)
+      let mapping = require(`${path.resolve(__dirname, '..')}\/${dir}\/${f}`)
       addMapping(router, mapping)
   }
 }
